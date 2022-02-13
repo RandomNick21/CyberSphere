@@ -1,19 +1,24 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class FixedJoystick : MonoBehaviour
 {
-    [SerializeField] private Transform Centre;
-    [SerializeField] private float RangeLimit;
-    [SerializeField] private Image _borders;
-
-    public static FixedJoystick instance;
+    [SerializeField] private Transform Stick;
+    [SerializeField] private Image Borders;
+    [SerializeField] private float MaxRadius;
     
-    private float _normalizedMagnitude;
+    public Vector2 Range;
+    public float Horizontal => Range.x;
+    public float Vertical => Range.y;
+    
+    public static FixedJoystick instance;
 
-    [HideInInspector] public Vector2 Range;
+    private float NormalizedStickMagnitude => Stick.localPosition.magnitude / MaxRadius;
+
+    public Vector2 mousePos;
+
+    public RectTransform canvas;
     
     private void Awake()
     {
@@ -21,21 +26,26 @@ public class FixedJoystick : MonoBehaviour
     }
     private void Update()
     {
-        if (Mouse.current.position.ReadValue().x < _borders.rectTransform.position.x + _borders.rectTransform.sizeDelta.x * 0.5f &&
-            Mouse.current.position.ReadValue().y < _borders.rectTransform.position.y + _borders.rectTransform.sizeDelta.y * 0.5f)
+        MoveStick();
+        
+        Stick.localPosition = Vector3.ClampMagnitude(Stick.localPosition, MaxRadius);
+        
+        Range = Stick.transform.localPosition.normalized * NormalizedStickMagnitude;
+    }
+    private void MoveStick()
+    {
+        var mousePosition = Mouse.current.position.ReadValue();
+        Vector2 mousePositionLocalPoint;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(canvas, mousePosition, Camera.main, out mousePositionLocalPoint);
+        mousePos = mousePosition;
+        
+        if (mousePositionLocalPoint != Vector2.zero)
         {
-            Centre.position = Mouse.current.position.ReadValue();
+            Stick.position = mousePosition;
         }
         else
         {
-            Centre.position = transform.position;
+            Stick.position = transform.position;
         }
-        
-        if (Centre.localPosition.magnitude > RangeLimit)
-            Centre.localPosition = Vector3.ClampMagnitude(Centre.localPosition, RangeLimit);
-        
-        _normalizedMagnitude = Centre.localPosition.magnitude / RangeLimit;
-        Range = Centre.transform.localPosition.normalized * _normalizedMagnitude;
     }
-    
 }
