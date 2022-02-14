@@ -11,8 +11,11 @@ public class PlayerAnimationController : MonoBehaviour
     [SerializeField, Range(0, 1)] private float DurationTimeOffset;
     [SerializeField, Range(0, 1)] private float DurationTransition;
     
-    private readonly int _runAnimationHash = Animator.StringToHash("Run");
     private readonly int _idleAnimationHash = Animator.StringToHash("Idle");
+    private readonly int _runForwardAnimationHash = Animator.StringToHash("RunForward");
+    private readonly int _runDownAnimationHash = Animator.StringToHash("RunDown");
+    private readonly int _runRightAnimationHash = Animator.StringToHash("RunRight");
+    private readonly int _runLeftAnimationHash = Animator.StringToHash("RunLeft");
 
     private PlayerMovement _playerMovement;
     private Animator _animator;
@@ -28,11 +31,31 @@ public class PlayerAnimationController : MonoBehaviour
     }
     private void Play(PlayerState state)
     {
-        if (state == PlayerState.Run)
-            _animator.speed = SpeedRunAnimation;
-        
-        _animator.CrossFade((state == PlayerState.Idle) ? _idleAnimationHash : _runAnimationHash, DurationAnimationChanges, 0,
+        _animator.speed = state == PlayerState.RunForward ? SpeedRunAnimation : 1f;
+
+        switch (state)
+        {
+            case PlayerState.Idle:
+                StartCrossFade(_idleAnimationHash);
+                return;
+            case PlayerState.RunForward:
+                StartCrossFade(_runForwardAnimationHash);
+                _animator.speed = SpeedRunAnimation;
+                return;
+            case PlayerState.RunDown:
+                StartCrossFade(_runDownAnimationHash);
+                return;
+            case PlayerState.RunRight:
+                StartCrossFade(_runRightAnimationHash);
+                return;
+            case PlayerState.RunLeft:
+                StartCrossFade(_runLeftAnimationHash);
+                return;
+        }
+    }
+    private void StartCrossFade(int hashName)
+    {
+        _animator.CrossFade(hashName, DurationAnimationChanges, 0,
             DurationTimeOffset, DurationTransition);
-        
     }
 }

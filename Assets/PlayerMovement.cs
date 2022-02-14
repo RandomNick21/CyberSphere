@@ -4,7 +4,10 @@ using UnityEngine;
 public enum PlayerState : byte
 {
     Idle,
-    Run
+    RunForward,
+    RunDown,
+    RunRight,
+    RunLeft
 }
 [RequireComponent(typeof(CharacterController))]
 public class PlayerMovement : MonoBehaviour
@@ -27,18 +30,34 @@ public class PlayerMovement : MonoBehaviour
     }
     private void Update()
     {
-        if (_joystick.Range == Vector2.zero)
-            SetState(PlayerState.Idle);
-        else
-            SetState(PlayerState.Run);
+        DefineState();
 
         _controller.Move(new Vector3(_joystick.Range.x, 0, _joystick.Range.y) * (SpeedMove * Time.deltaTime));
 
-        var angel = Mathf.Atan2(_joystick.Horizontal, _joystick.Vertical) * Mathf.Rad2Deg;
+        /*var angel = Mathf.Atan2(_joystick.Horizontal, _joystick.Vertical) * Mathf.Rad2Deg;
         if (angel == 0)
             angel = transform.eulerAngles.y;
         
-        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0, angel, 0), SpeedRotate * Time.deltaTime);
+        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0, angel, 0), SpeedRotate * Time.deltaTime);*/
+    }
+    private void DefineState()
+    {
+        var angel = Mathf.Atan2(_joystick.Horizontal, _joystick.Vertical) * Mathf.Rad2Deg;
+        
+        if (_joystick.Range == Vector2.zero)
+        {
+            SetState(PlayerState.Idle);
+            return;
+        }
+        
+        if(angel > -45 && angel < 45)
+            SetState(PlayerState.RunForward);
+        else if(angel > 45 && angel < 135)
+            SetState(PlayerState.RunRight);
+        else if(angel > 135 && angel < 225)
+            SetState(PlayerState.RunDown);
+        else if(angel < -45 && angel > -135)
+            SetState(PlayerState.RunLeft);
     }
     private void SetState(PlayerState state)
     {
