@@ -17,23 +17,21 @@ public class PlayerMovement : MonoBehaviour
     
     private CharacterController _controller;
 
-    private FixedJoystick _joystick;
+    [SerializeField] private FixedJoystick _joystick;
 
-    private PlayerState _currentState;
+    private PlayerState _currentState = PlayerState.Idle;
     public Action<PlayerState> OnSetState;
 
     private void Start()
     {
         _controller = GetComponent<CharacterController>();
-        
-        _joystick = FixedJoystick.instance;
     }
     private void Update()
     {
         DefineState();
 
-        _controller.Move(new Vector3(_joystick.Range.x, 0, _joystick.Range.y) * (SpeedMove * Time.deltaTime));
-
+        _controller.Move(transform.TransformDirection(new Vector3(_joystick.Range.x, 0, _joystick.Range.y)) * (SpeedMove * Time.deltaTime) );
+        
         /*var angel = Mathf.Atan2(_joystick.Horizontal, _joystick.Vertical) * Mathf.Rad2Deg;
         if (angel == 0)
             angel = transform.eulerAngles.y;
@@ -42,13 +40,13 @@ public class PlayerMovement : MonoBehaviour
     }
     private void DefineState()
     {
-        var angel = Mathf.Atan2(_joystick.Horizontal, _joystick.Vertical) * Mathf.Rad2Deg;
-        
         if (_joystick.Range == Vector2.zero)
         {
             SetState(PlayerState.Idle);
             return;
         }
+        
+        var angel = Mathf.Atan2(_joystick.Horizontal, _joystick.Vertical) * Mathf.Rad2Deg;
         
         if(angel > -45 && angel < 45)
             SetState(PlayerState.RunForward);

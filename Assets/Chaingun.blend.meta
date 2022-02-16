@@ -3,7 +3,12 @@ guid: 3c939500705aacf4fb333b384c70b60f
 ModelImporter:
   serializedVersion: 20200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Chaingun
+    second: {fileID: 2100000, guid: 95a90b583340d74409698499234c593a, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

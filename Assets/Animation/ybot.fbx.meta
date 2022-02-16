@@ -6,7 +6,17 @@ ModelImporter:
   - first:
       74: -203655887218126122
     second: mixamo.com
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Alpha_Body_MAT
+    second: {fileID: 2100000, guid: f2eeefa562fbb4d46b103bab5e1d939e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Alpha_Joints_MAT
+    second: {fileID: 2100000, guid: 9a92c44f775f45240b2c9422a171fce4, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -876,7 +886,7 @@ ModelImporter:
       position: {x: 0.000000002053664, y: 0.000000009634096, z: 0.09992521}
       rotation: {x: 0, y: -0, z: -0, w: 1}
       scale: {x: 1, y: 1, z: 1}
-    armTwist: 0.5
+    armTwist: 0.24
     foreArmTwist: 0.5
     upperLegTwist: 0.5
     legTwist: 0.5
